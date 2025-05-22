@@ -1,6 +1,5 @@
 let recordButton = document.getElementById('record');
 let playButton = document.getElementById('play');
-let playSoundButton = document.getElementById('play-sound');
 let sampleSelect = document.getElementById('sample');
 let statusEl = document.getElementById('status');
 
@@ -8,6 +7,7 @@ let audioContext;
 let mediaRecorder;
 let recordedChunks = [];
 let audioBuffer;
+const sampleAudio = new Audio('sounds/splat.wav');
 
 recordButton.addEventListener('click', async () => {
   if (!audioContext) {
@@ -83,6 +83,11 @@ playSoundButton.addEventListener('click', async () => {
   const arrayBuffer = await response.arrayBuffer();
   const buffer = await audioContext.decodeAudioData(arrayBuffer);
   playArpeggio(buffer);
+});
+
+playSoundButton.addEventListener('click', () => {
+  sampleAudio.currentTime = 0;
+  sampleAudio.play();
 });
 
 function getIntervals(type) {
