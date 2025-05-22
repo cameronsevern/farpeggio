@@ -10,6 +10,34 @@
   <div class="container">
     <h1>Farpeggio</h1>
     <p>Record a sound and transform it into an arpeggio.</p>
+
+    <!-- Sound Source Selection Area -->
+    <div>
+      <fieldset>
+        <legend>Choose Sound Source:</legend>
+        <label>
+          <input type="radio" id="sourceUpload" name="soundSource" value="upload" checked>
+          Upload Sound File
+        </label>
+        <label>
+          <input type="radio" id="sourceRecord" name="soundSource" value="record">
+          Use Last Recorded Sound
+        </label>
+      </fieldset>
+    </div>
+
+    <!-- Upload Sound Options (conditionally visible) -->
+    <div id="uploadOptionsContainer">
+      <label for="uploadSoundInput">Select Audio File:</label>
+      <input type="file" id="uploadSoundInput" accept="audio/*">
+      <p id="uploadedFileName"></p>
+    </div>
+
+    <!-- Recording Controls (conditionally visible, initially hidden) -->
+    <div id="recordOptionsContainer" style="display:none;">
+      <button id="recordButton">Record New Sound</button>
+    </div>
+
     <div class="controls">
       <label>
         Chord:
@@ -33,7 +61,7 @@
         <select id="pattern">
           <option value="up">Up</option>
           <option value="down">Down</option>
-          <option value="updown">Up &amp; Down</option>
+          <option value="updown">Up & Down</option>
         </select>
       </label>
       <label>
@@ -41,17 +69,11 @@
         <input type="number" id="tempo" value="120" min="30" max="300">
       </label>
     </div>
+
     <div class="buttons">
-      <button id="record">Record</button>
-      <button id="play" disabled>Play Arpeggio</button>
-      <label>
-        Sample:
-        <select id="sample">
-          <option value="splat.wav">Splat</option>
-        </select>
-      </label>
-      <button id="play-sound">Play Sample</button>
+      <button id="playArpeggioButton">Play Arpeggio</button>
     </div>
+
     <p id="status"></p>
   </div>
   <script src="main.js"></script>
