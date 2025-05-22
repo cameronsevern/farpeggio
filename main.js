@@ -1,6 +1,6 @@
 let recordButton = document.getElementById('record');
 let playButton = document.getElementById('play');
-let playSoundButton = document.getElementById('play-sound');
+let sampleSelect = document.getElementById('sample');
 let statusEl = document.getElementById('status');
 
 let audioContext;
@@ -36,9 +36,8 @@ recordButton.addEventListener('click', async () => {
   }
 });
 
-playButton.addEventListener('click', () => {
-  if (!audioBuffer) return;
 
+function playArpeggio(buffer) {
   const chordType = document.getElementById('chord').value;
   const octaves = parseInt(document.getElementById('octaves').value, 10);
   const pattern = document.getElementById('pattern').value;
@@ -63,11 +62,27 @@ playButton.addEventListener('click', () => {
 
   sequence.forEach((semitones, index) => {
     const source = audioContext.createBufferSource();
-    source.buffer = audioBuffer;
+    source.buffer = buffer;
     source.playbackRate.value = Math.pow(2, semitones / 12);
     source.connect(audioContext.destination);
     source.start(startTime + noteDuration * index);
   });
+}
+
+playButton.addEventListener('click', () => {
+  if (!audioBuffer) return;
+  playArpeggio(audioBuffer);
+});
+
+playSoundButton.addEventListener('click', async () => {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const file = sampleSelect.value;
+  const response = await fetch(`sounds/${file}`);
+  const arrayBuffer = await response.arrayBuffer();
+  const buffer = await audioContext.decodeAudioData(arrayBuffer);
+  playArpeggio(buffer);
 });
 
 playSoundButton.addEventListener('click', () => {
