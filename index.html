@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farpeggio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Farpeggio</h1>
+    <p>Record a sound and transform it into an arpeggio.</p>
+    <div class="controls">
+      <label>
+        Chord:
+        <select id="chord">
+          <option value="major">Major</option>
+          <option value="minor">Minor</option>
+          <option value="diminished">Diminished</option>
+          <option value="augmented">Augmented</option>
+        </select>
+      </label>
+      <label>
+        Octaves:
+        <select id="octaves">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+      </label>
+      <label>
+        Pattern:
+        <select id="pattern">
+          <option value="up">Up</option>
+          <option value="down">Down</option>
+          <option value="updown">Up &amp; Down</option>
+        </select>
+      </label>
+      <label>
+        Tempo (BPM):
+        <input type="number" id="tempo" value="120" min="30" max="300">
+      </label>
+    </div>
+    <div class="buttons">
+      <button id="record">Record</button>
+      <button id="play" disabled>Play Arpeggio</button>
+    </div>
+    <p id="status"></p>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
