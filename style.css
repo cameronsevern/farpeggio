@@ -1,7 +1,7 @@
 body {
   font-family: 'Georgia', 'Times New Roman', serif; /* Classic, musical feel */
   margin: 0;
-  padding: 1rem;
+  padding: 0.5rem; /* Reduced padding */
   background-color: #FAF0E6; /* Aged parchment/Linen */
   color: #3B2F2F; /* Dark sepia/brown text */
   display: flex;
