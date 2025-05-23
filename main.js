@@ -16,7 +16,7 @@ let uploadedAudioBuffer; // New
 let recordedAudioBuffer;
 let mediaRecorder;
 let recordedChunks = [];
-const DEFAULT_SOUND_URL = 'https://cameronsevern.github.io/farpeggio/sounds/splat.wav';
+const DEFAULT_SOUND_URL = 'sounds/splat.wav';
 let defaultAudioBuffer;
 
 // Initialization
