@@ -3,35 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Farpeggio</title>
+  <title>farpeggio</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>Farpeggio</h1>
-    <p>Record a sound and transform it into an arpeggio.</p>
+    <h1><span class="forte-f">f</span>arpeggio</h1>
+    <p>turn any sound into an arpeggio</p>
 
-    <!-- Sound Source Toggle -->
-    <div class="sound-source-toggle-container">
-      <div class="toggle-switch">
-        <input type="radio" id="sourceUpload" name="soundSource" value="upload" checked>
-        <label for="sourceUpload" class="toggle-option toggle-upload" title="Upload an audio file">Upload</label>
-        <input type="radio" id="sourceRecord" name="soundSource" value="record">
-        <label for="sourceRecord" class="toggle-option toggle-record" title="Use the last sound recorded in this session">Record</label>
-        <span class="toggle-slider"></span>
-      </div>
-    </div>
-
-    <!-- Upload Sound Options (conditionally visible) -->
-    <div id="uploadOptionsContainer">
-      <label for="uploadSoundInput">Select Audio File:</label>
+    <!-- Upload Sound Options (conditionally visible - input is now hidden and triggered by button) -->
+    <div id="uploadOptionsContainer" style="display:none;">
       <input type="file" id="uploadSoundInput" accept="audio/*">
       <p id="uploadedFileName"></p>
     </div>
 
     <!-- Recording Controls (conditionally visible, initially hidden) -->
     <div id="recordOptionsContainer" style="display:none;">
-      <button id="recordButton" title="Record New Sound">🎤</button>
+      <!-- The record button has been moved to the main controls section below -->
     </div>
 
     <div class="controls">
@@ -67,7 +55,9 @@
     </div>
 
     <div class="buttons">
-      <button id="playArpeggioButton" title="Play Arpeggio">▶️</button>
+      <button id="upload-button" title="Upload Audio File">⬆</button>
+      <button id="play-button" title="Play Arpeggio">♫</button>
+      <button id="record-button" title="Record New Sound">●</button>
     </div>
 
     <p id="status"></p>

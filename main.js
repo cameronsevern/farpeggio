@@ -1,18 +1,15 @@
 // DOM Elements
-const sourceUploadRadio = document.getElementById('sourceUpload'); // New
-const sourceRecordRadio = document.getElementById('sourceRecord');
-const uploadOptionsContainer = document.getElementById('uploadOptionsContainer'); // New
-const recordOptionsContainer = document.getElementById('recordOptionsContainer');
-const uploadSoundInput = document.getElementById('uploadSoundInput'); // New
-const uploadedFileName = document.getElementById('uploadedFileName'); // New
-const recordButton = document.getElementById('recordButton');
-const playArpeggioButton = document.getElementById('playArpeggioButton');
+const uploadSoundInput = document.getElementById('uploadSoundInput');
+const uploadedFileName = document.getElementById('uploadedFileName');
+const recordButton = document.getElementById('record-button'); // Corrected ID
+const playArpeggioButton = document.getElementById('play-button'); // Corrected ID
+const uploadButton = document.getElementById('upload-button'); // Added upload button
 const statusEl = document.getElementById('status');
 
 // Global State
 let audioContext;
-let currentSourceMode = 'upload'; // 'upload' or 'record'
-let uploadedAudioBuffer; // New
+let lastInteractedSource = 'none'; // 'upload', 'record', or 'none'
+let uploadedAudioBuffer;
 let recordedAudioBuffer;
 let mediaRecorder;
 let recordedChunks = [];
@@ -22,13 +19,11 @@ let defaultAudioBuffer;
 // Initialization
 function init() {
   setupEventListeners();
-  updateSourceModeUI(); // Set initial UI state
   loadDefaultSound();
 }
 
 async function loadDefaultSound() {
   if (!audioContext) {
-    // Ensure AudioContext is initialized, similar to other sound loading logic
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
   }
   if (audioContext.state === 'suspended') {
@@ -45,30 +40,12 @@ async function loadDefaultSound() {
   }
 }
 
-function updateSourceModeUI() {
-  if (currentSourceMode === 'upload') {
-    uploadOptionsContainer.style.display = 'block';
-    recordOptionsContainer.style.display = 'none';
-  } else { // 'record'
-    uploadOptionsContainer.style.display = 'none';
-    recordOptionsContainer.style.display = 'block';
-  }
-}
-
 function setupEventListeners() {
-  sourceUploadRadio.addEventListener('change', () => { // New
-    currentSourceMode = 'upload';
-    updateSourceModeUI();
-    statusEl.textContent = 'Source: Uploaded File';
+  uploadButton.addEventListener('click', () => {
+    uploadSoundInput.click(); // Trigger file input click
   });
 
-  sourceRecordRadio.addEventListener('change', () => {
-    currentSourceMode = 'record';
-    updateSourceModeUI();
-    statusEl.textContent = 'Source: Last Recorded Sound';
-  });
-
-  uploadSoundInput.addEventListener('change', async (event) => { // New
+  uploadSoundInput.addEventListener('change', async (event) => {
     const file = event.target.files[0];
     uploadedFileName.textContent = '';
     if (!file) {
@@ -90,6 +67,7 @@ function setupEventListeners() {
       uploadedAudioBuffer = await audioContext.decodeAudioData(arrayBuffer);
       statusEl.textContent = `File loaded: ${file.name}`;
       uploadedFileName.textContent = `Selected: ${file.name}`;
+      lastInteractedSource = 'upload'; // Set last interacted source
     } catch (error) {
       console.error("Error processing uploaded file:", error);
       statusEl.textContent = 'Error processing audio file. Please try a different file.';
@@ -107,7 +85,7 @@ function setupEventListeners() {
 
     if (mediaRecorder && mediaRecorder.state === 'recording') {
       mediaRecorder.stop();
-      recordButton.textContent = 'Record';
+      recordButton.innerHTML = '●'; // Change back to record symbol
       statusEl.textContent = 'Processing recording...';
     } else {
       try {
@@ -116,21 +94,21 @@ function setupEventListeners() {
         recordedChunks = [];
         mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
         mediaRecorder.onstop = async () => {
-          const blob = new Blob(recordedChunks, { type: 'audio/webm' }); // Specify MIME type
+          const blob = new Blob(recordedChunks, { type: 'audio/webm' });
           const arrayBuffer = await blob.arrayBuffer();
           try {
             recordedAudioBuffer = await audioContext.decodeAudioData(arrayBuffer);
             statusEl.textContent = 'Recording ready!';
-            // Enable play button or indicate readiness
+            lastInteractedSource = 'record'; // Set last interacted source
           } catch (decodeError) {
             console.error("Error decoding audio data:", decodeError);
             statusEl.textContent = 'Error decoding audio. Please try again.';
           }
         };
         mediaRecorder.start();
-        recordButton.textContent = 'Stop Recording';
+        recordButton.innerHTML = '■'; // Change to stop symbol or text
         statusEl.textContent = 'Recording...';
-        recordedAudioBuffer = null; // Clear previous recording
+        recordedAudioBuffer = null;
       } catch (err) {
         console.error("Error accessing microphone:", err);
         statusEl.textContent = 'Error accessing microphone. Please allow permission.';
@@ -150,7 +128,7 @@ function setupEventListeners() {
 
     let bufferToPlay = null;
 
-    if (currentSourceMode === 'upload') {
+    if (lastInteractedSource === 'upload') {
       if (uploadedAudioBuffer) {
         bufferToPlay = uploadedAudioBuffer;
       } else if (defaultAudioBuffer) {
@@ -161,7 +139,7 @@ function setupEventListeners() {
         console.error('No uploaded audio buffer available and default sound failed to load.');
         return;
       }
-    } else if (currentSourceMode === 'record') {
+    } else if (lastInteractedSource === 'record') {
       if (recordedAudioBuffer) {
         bufferToPlay = recordedAudioBuffer;
       } else if (defaultAudioBuffer) {
@@ -172,6 +150,15 @@ function setupEventListeners() {
         console.error('No recorded audio available and default sound failed to load.');
         return;
       }
+    } else { // 'none' or unhandled
+        if (defaultAudioBuffer) {
+            statusEl.textContent = 'No sound selected. Using default sound.';
+            bufferToPlay = defaultAudioBuffer;
+        } else {
+            statusEl.textContent = 'Error: No sound source selected and default sound not available.';
+            console.error('No sound source selected and default sound failed to load.');
+            return;
+        }
     }
 
     if (bufferToPlay) {

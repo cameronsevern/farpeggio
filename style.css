@@ -1,118 +1,58 @@
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Georgia', 'Times New Roman', serif; /* Classic, musical feel */
   margin: 0;
-  padding: 1rem; /* Add some padding to the body */
-  background-color: #f0f2f5; /* Slightly softer background */
-  color: #333;
+  padding: 1rem;
+  background-color: #FAF0E6; /* Aged parchment/Linen */
+  color: #3B2F2F; /* Dark sepia/brown text */
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  line-height: 1.5; /* Slightly reduced line-height */
+  line-height: 1.6; /* Slightly increased for readability with serif */
 }
 
 .container {
-  background: #ffffff;
-  padding: 1.5rem; /* Reduced padding */
-  border-radius: 10px; /* Slightly smaller border-radius */
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); /* Softer shadow */
+  background: #FDF5E6; /* Slightly lighter parchment for container */
+  padding: 1.5rem;
+  border-radius: 8px; /* Slightly more subtle radius */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
   width: 100%;
-  max-width: 480px; /* Slightly smaller max-width */
-  margin: 0.5rem; /* Reduced margin */
+  max-width: 500px; /* Adjusted max-width */
+  margin: 0.5rem;
+  border: 1px solid #D2B48C; /* Tan border to enhance aged look */
 }
 
 h1 {
   text-align: center;
-  color: #1c2833; /* Darker, more subtle heading color */
-  margin-bottom: 0.75rem; /* Adjusted margin */
-  font-size: 1.75rem; /* Slightly smaller h1 */
+  color: #5D4037; /* Darker brown for headings */
+  margin-bottom: 1rem;
+  font-size: 2rem; /* Slightly larger h1 */
+}
+
+.forte-f {
+  font-family: 'Times New Roman', Times, serif; /* Or a specific music font if available */
+  font-style: italic;
+  font-weight: bold;
+  font-size: 2em; /* Make it significantly larger */
+  margin-right: -0.1em; /* Adjust spacing if needed */
 }
 
 p {
   text-align: center;
-  color: #566573; /* Slightly darker paragraph text for better contrast */
-  margin-bottom: 1.25rem; /* Reduced margin */
-  font-size: 0.95rem; /* Slightly smaller paragraph text */
-}
-
-/* Styles for the new sound source toggle */
-.sound-source-toggle-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1.5rem; /* Increased margin for better spacing */
-}
-
-.toggle-switch {
-  position: relative;
-  display: inline-flex;
-  background-color: #e9ecef; /* Light grey background for the switch track */
-  border-radius: 20px; /* Rounded corners for the track */
-  padding: 4px; /* Padding around the options */
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.toggle-switch input[type="radio"] {
-  display: none; /* Hide the actual radio buttons */
-}
-
-.toggle-option {
-  padding: 8px 18px; /* Padding for each option */
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #495057; /* Default text color for options */
-  cursor: pointer;
-  z-index: 1; /* Ensure text is above the slider */
-  transition: color 0.3s ease;
-  border-radius: 16px; /* Rounded corners for options, to match slider */
-  text-align: center;
-  min-width: 80px; /* Ensure options have a minimum width */
-}
-
-.toggle-slider {
-  position: absolute;
-  top: 4px; /* Align with padding */
-  left: 4px; /* Start at the first option */
-  width: calc(50% - 4px); /* Slider takes up half the space, minus padding adjustment */
-  height: calc(100% - 8px); /* Full height minus top/bottom padding */
-  background-color: #ffffff; /* White slider */
-  border-radius: 16px; /* Rounded corners for the slider */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-  transition: transform 0.3s ease, background-color 0.3s ease;
-  z-index: 0; /* Slider is behind the text */
-}
-
-/* Style for selected (checked) option */
-.toggle-switch input[type="radio"]:checked + .toggle-option {
-  color: #27ae60; /* Green text for selected option */
-}
-
-/* Move slider when 'record' is selected */
-.toggle-switch input#sourceRecord:checked ~ .toggle-slider {
-  transform: translateX(calc(100% - 0px)); /* Move slider to the right. The 0px is a bit of a hack to ensure it covers the second item correctly */
-}
-
-/* Adjust slider width if options have different text lengths - this might need fine-tuning */
-/* For simplicity, we assume options are roughly equal width. For more complex scenarios, JS might be needed or more specific width calculations. */
-
-/* Ensure the labels are still somewhat distinct even when not selected */
-.toggle-option:not(:has(~ input:checked)) { /* A bit of a complex selector, might need simplification or browser prefixing */
-   /* color: #6c757d; */ /* Slightly muted color for non-active, if desired */
-}
-
-input[type="file"] {
-  display: block;
-  width: calc(100% - 0.8rem); /* Adjusted width */
-  padding: 0.4rem; /* Reduced padding */
-  margin-top: 0.2rem;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  background-color: #f8f9fa; /* Subtle background for input */
-  font-size: 0.85rem;
+  color: #4E342E; /* Darker brown for paragraphs */
+  margin-bottom: 1.25rem;
+  font-size: 1rem; /* Slightly larger paragraph text */
 }
 
 #uploadOptionsContainer, #recordOptionsContainer {
-  margin-bottom: 1.25rem; /* Reduced margin */
+  /* These containers are now hidden via inline style in HTML,
+     but we can ensure they don't take up space if accidentally shown. */
+  display: none;
+  margin-bottom: 0;
 }
+
+/* The actual file input is hidden, so no specific styles are needed for it here,
+   unless you want to style the #uploadedFileName paragraph if it becomes visible. */
 
 .controls {
   display: grid;
@@ -122,80 +62,132 @@ input[type="file"] {
 }
 
 .controls label {
-  margin-bottom: 0; /* Remove default margin as grid gap handles spacing */
+  display: block; /* Ensure labels take full width for alignment */
+  margin-bottom: 0.3rem; /* Add a little space below the label text */
+  color: #5D4037; /* Darker brown, consistent with h1 */
+  font-size: 0.9rem;
+  font-weight: bold;
 }
 
 select,
 input[type="number"] {
   width: 100%;
-  padding: 0.5rem 0.7rem; /* Reduced padding */
-  border: 1px solid #ced4da;
-  border-radius: 5px;
+  padding: 0.6rem 0.8rem; /* Slightly increased padding */
+  background-color: #FDF5E6; /* Light parchment, same as container */
+  color: #3B2F2F; /* Dark sepia text */
+  border: 1px solid #D2B48C; /* Tan border, same as container border */
+  border-radius: 4px; /* Slightly less rounded */
   box-sizing: border-box;
-  font-size: 0.9rem; /* Smaller font size */
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  font-family: 'Georgia', 'Times New Roman', serif; /* Consistent font */
+  font-size: 0.95rem; /* Slightly larger font */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); /* Subtle inner shadow */
 }
 
 select:focus,
 input[type="number"]:focus {
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.25);
+  border-color: #8C7853; /* Darker tan border on focus */
+  box-shadow: 0 0 0 2px rgba(140, 120, 83, 0.25), inset 0 1px 2px rgba(0,0,0,0.05); /* Thematic focus shadow */
   outline: none;
+  background-color: #FFFBF2; /* Slightly lighter on focus */
+}
+
+/* Style for the dropdown arrow on select elements */
+select {
+  appearance: none; /* Remove default system appearance */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%233B2F2F%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 0.65em auto;
+  padding-right: 2rem; /* Make space for the arrow */
+}
+
+/* Styling for number input up/down arrows (might be limited by browser) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  opacity: 0.5; /* Make them a bit more subtle if visible */
 }
 
 .buttons {
-  text-align: center;
+  display: flex; /* Enable flexbox for alignment */
+  justify-content: center; /* Center buttons horizontally */
+  align-items: center; /* Align items vertically */
+  gap: 1rem; /* Space between buttons */
   margin-top: 2rem;
+  width: 100%; /* Ensure the container takes full width for centering */
+  position: fixed; /* Fixed position */
+  bottom: 20px; /* At the bottom of the page */
+  left: 0; /* Align to the left edge */
+  right: 0; /* Align to the right edge */
+  padding-bottom: 1rem; /* Add some padding at the bottom */
 }
 
 button {
-  background-color: #3498db;
-  color: white;
-  padding: 0.5rem 0.8rem; /* Default padding */
-  border: none;
-  border-radius: 5px; /* Default border radius */
-  font-size: 1.5rem; /* Default icon size */
-  font-weight: 500;
-  line-height: 1;
+  background-color: #D2B48C; /* Tan, parchment-like */
+  color: #3B2F2F; /* Dark sepia text */
+  padding: 0; /* Adjusted for fixed size */
+  border: 1px solid #8C7853; /* Darker border for definition */
+  border-radius: 50%; /* Circular buttons */
+  width: 60px; /* Default width for circular buttons */
+  height: 60px; /* Default height for circular buttons */
+  font-family: 'Georgia', 'Times New Roman', serif; /* Consistent font */
+  font-size: 1rem; /* Base font size */
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.15s ease-in-out, transform 0.1s ease;
-  display: inline-flex; /* Use flex to center content */
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 button:hover {
-  background-color: #2980b9;
+  background-color: #C1A074; /* Slightly darker on hover */
   transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
 
 button:active {
   transform: translateY(0);
+  background-color: #A9895F; /* Darker on active */
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
 }
 
-#recordButton {
-  background-color: #2ecc71; /* Green for record */
+#play-button {
+  font-size: 2.5rem; /* Larger for the music note */
+  padding: 0; /* Adjusted for fixed size */
+  width: 90px; /* Significantly larger width */
+  height: 90px; /* Significantly larger height */
+  border-radius: 50%; /* Circular */
+  line-height: 1; /* Adjust line height for icon centering */
 }
 
-#recordButton:hover {
-  background-color: #27ae60;
+#record-button {
+  background-color: #D32F2F; /* Red for record (updated) */
+  color: #FFF0F5; /* Lavender blush / off-white text for contrast */
+  border-color: #800000; /* Darker red border */
 }
 
-#playArpeggioButton {
-  background-color: #2ecc71; /* Green background */
-  color: white;
-  width: 50px; /* Equal width and height for a circle */
-  height: 50px;
-  padding: 0; /* Remove padding to rely on width/height */
-  border-radius: 50%; /* Circular shape */
-  font-size: 1.8rem; /* Adjust icon size if needed */
-  line-height: 50px; /* Center icon vertically */
-  text-align: center; /* Center icon horizontally */
+#record-button:hover {
+  background-color: #B71C1C; /* Darker red on hover (updated) */
 }
 
-#playArpeggioButton:hover {
-  background-color: #27ae60; /* Darker green on hover */
+#record-button:active {
+  background-color: #9A1A1A; /* Even darker red on active (updated) */
+}
+
+
+#upload-button {
+  /* Style distinct from play and record, but consistent with theme */
+  background-color: #E0D6C4; /* Lighter parchment */
+  border-color: #B0A08C;
+}
+
+#upload-button:hover {
+  background-color: #D0C6B4;
 }
 
 #status {
