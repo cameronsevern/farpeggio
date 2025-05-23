@@ -16,11 +16,33 @@ let uploadedAudioBuffer; // New
 let recordedAudioBuffer;
 let mediaRecorder;
 let recordedChunks = [];
+const DEFAULT_SOUND_URL = 'https://cameronsevern.github.io/farpeggio/sounds/splat.wav';
+let defaultAudioBuffer;
 
 // Initialization
 function init() {
   setupEventListeners();
   updateSourceModeUI(); // Set initial UI state
+  loadDefaultSound();
+}
+
+async function loadDefaultSound() {
+  if (!audioContext) {
+    // Ensure AudioContext is initialized, similar to other sound loading logic
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioContext.state === 'suspended') {
+    await audioContext.resume();
+  }
+  try {
+    const response = await fetch(DEFAULT_SOUND_URL);
+    const arrayBuffer = await response.arrayBuffer();
+    defaultAudioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    console.log('Default sound loaded successfully.');
+  } catch (error) {
+    console.error('Failed to load default sound:', error);
+    statusEl.textContent = 'Error loading default sound.';
+  }
 }
 
 function updateSourceModeUI() {
@@ -126,21 +148,36 @@ function setupEventListeners() {
 
     statusEl.textContent = 'Playing arpeggio...';
 
+    let bufferToPlay = null;
+
     if (currentSourceMode === 'upload') {
-      if (!uploadedAudioBuffer) {
-        statusEl.textContent = 'Error: No audio file uploaded or processed.';
-        console.error('No uploaded audio buffer available.');
+      if (uploadedAudioBuffer) {
+        bufferToPlay = uploadedAudioBuffer;
+      } else if (defaultAudioBuffer) {
+        statusEl.textContent = 'No uploaded file. Using default sound.';
+        bufferToPlay = defaultAudioBuffer;
+      } else {
+        statusEl.textContent = 'Error: No audio file uploaded and default sound not available.';
+        console.error('No uploaded audio buffer available and default sound failed to load.');
         return;
       }
-      playArpeggio(uploadedAudioBuffer);
     } else if (currentSourceMode === 'record') {
-      if (!recordedAudioBuffer) {
-        statusEl.textContent = 'Error: No recorded audio available or recording not processed.';
-        console.error('No recorded audio available.');
+      if (recordedAudioBuffer) {
+        bufferToPlay = recordedAudioBuffer;
+      } else if (defaultAudioBuffer) {
+        statusEl.textContent = 'No recorded sound. Using default sound.';
+        bufferToPlay = defaultAudioBuffer;
+      } else {
+        statusEl.textContent = 'Error: No recorded audio available and default sound not available.';
+        console.error('No recorded audio available and default sound failed to load.');
         return;
       }
-      playArpeggio(recordedAudioBuffer);
     }
+
+    if (bufferToPlay) {
+      playArpeggio(bufferToPlay);
+    }
+    // If bufferToPlay is still null here, it means an error message was already set.
   });
 }
 

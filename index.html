@@ -11,19 +11,15 @@
     <h1>Farpeggio</h1>
     <p>Record a sound and transform it into an arpeggio.</p>
 
-    <!-- Sound Source Selection Area -->
-    <div>
-      <fieldset>
-        <legend>Choose Sound Source:</legend>
-        <label>
-          <input type="radio" id="sourceUpload" name="soundSource" value="upload" checked>
-          Upload Sound File
-        </label>
-        <label>
-          <input type="radio" id="sourceRecord" name="soundSource" value="record">
-          Use Last Recorded Sound
-        </label>
-      </fieldset>
+    <!-- Sound Source Toggle -->
+    <div class="sound-source-toggle-container">
+      <div class="toggle-switch">
+        <input type="radio" id="sourceUpload" name="soundSource" value="upload" checked>
+        <label for="sourceUpload" class="toggle-option toggle-upload" title="Upload an audio file">Upload</label>
+        <input type="radio" id="sourceRecord" name="soundSource" value="record">
+        <label for="sourceRecord" class="toggle-option toggle-record" title="Use the last sound recorded in this session">Record</label>
+        <span class="toggle-slider"></span>
+      </div>
     </div>
 
     <!-- Upload Sound Options (conditionally visible) -->
@@ -35,7 +31,7 @@
 
     <!-- Recording Controls (conditionally visible, initially hidden) -->
     <div id="recordOptionsContainer" style="display:none;">
-      <button id="recordButton">Record New Sound</button>
+      <button id="recordButton" title="Record New Sound">🎤</button>
     </div>
 
     <div class="controls">
@@ -71,7 +67,7 @@
     </div>
 
     <div class="buttons">
-      <button id="playArpeggioButton">Play Arpeggio</button>
+      <button id="playArpeggioButton" title="Play Arpeggio">▶️</button>
     </div>
 
     <p id="status"></p>
