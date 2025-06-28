@@ -20,7 +20,7 @@ let uploadedAudioBuffer;
 let recordedAudioBuffer;
 let mediaRecorder;
 let recordedChunks = [];
-const DEFAULT_SOUND_URL = 'sounds/splat.mp3';
+const DEFAULT_SOUND_URL = 'sounds/splat.wav';
 let defaultAudioBuffer = null; // Will store the decoded AudioBuffer
 let defaultSoundArrayBufferPromise = null; // Promise for the fetched ArrayBuffer
 
@@ -40,17 +40,8 @@ async function ensureAudioContext() {
     // Create AudioContext only after user interaction for iOS Safari compatibility
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
     console.log('AudioContext created after user interaction.');
-
-    // Play a silent buffer on context creation to unlock audio playback on iOS.
-    // This is a common workaround for Safari's autoplay policies.
-    const buffer = audioContext.createBuffer(1, 1, 22050);
-    const source = audioContext.createBufferSource();
-    source.buffer = buffer;
-    source.connect(audioContext.destination);
-    source.start(0);
-    console.log('Played silent buffer to unlock AudioContext.');
   }
-
+  
   if (audioContext.state === 'suspended') {
     try {
       await audioContext.resume();
