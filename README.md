@@ -2,6 +2,8 @@
 
 A simple webpage that records a sound and plays it back as an arpeggio. You can select a chord, number of octaves, pattern, and tempo. A sample sound is included in the `sounds` folder that you can play with the **Play Sample** button.
 
+## Live Demo
+🎵 **[Try Farpeggio now!](https://cameronsevern.github.io/farpeggio)** 🎵
 
 ## Usage
 Open `index.html` in a modern browser (mobile friendly) or host the repo on GitHub Pages.
