@@ -1,3 +1,10 @@
+// farpeggio - Turn any sound into an arpeggio
+// 
+// iOS Safari Compatibility Notes:
+// - AudioContext is created lazily after first user interaction
+// - This prevents iOS Safari from blocking audio due to autoplay policies
+// - All audio operations ensure AudioContext is properly initialized and resumed
+
 // DOM Elements
 const uploadSoundInput = document.getElementById('uploadSoundInput');
 const uploadedFileName = document.getElementById('uploadedFileName');
