@@ -19,11 +19,33 @@ let defaultSoundArrayBufferPromise = null; // Promise for the fetched ArrayBuffe
 
 // Initialization
 function init() {
-  // Initialize AudioContext early
-  audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  // Do NOT initialize AudioContext early for iOS Safari compatibility
+  // AudioContext will be created lazily on first user interaction
+  audioContext = null;
   // Start fetching the default sound's ArrayBuffer immediately
   defaultSoundArrayBufferPromise = fetchDefaultSoundArrayBuffer();
   setupEventListeners();
+}
+
+// Helper function to ensure AudioContext is properly initialized
+async function ensureAudioContext() {
+  if (!audioContext) {
+    // Create AudioContext only after user interaction for iOS Safari compatibility
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    console.log('AudioContext created after user interaction.');
+  }
+  
+  if (audioContext.state === 'suspended') {
+    try {
+      await audioContext.resume();
+      console.log('AudioContext resumed successfully.');
+    } catch (err) {
+      console.error('Failed to resume AudioContext:', err);
+      throw new Error('Failed to activate audio system');
+    }
+  }
+  
+  return audioContext;
 }
 
 async function fetchDefaultSoundArrayBuffer() {
@@ -78,11 +100,12 @@ function setupEventListeners() {
       return;
     }
 
-    if (!audioContext) { // Should be initialized by init()
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (audioContext.state === 'suspended') {
-      await audioContext.resume(); // Ensure context is active for decoding
+    try {
+      await ensureAudioContext(); // Use helper function for iOS compatibility
+    } catch (error) {
+      console.error('Failed to initialize audio system:', error);
+      statusEl.textContent = 'Error: Audio system not available. Please try again.';
+      return;
     }
 
     statusEl.textContent = `Loading ${file.name}...`;
@@ -100,11 +123,12 @@ function setupEventListeners() {
   });
 
   recordButton.addEventListener('click', async () => {
-    if (!audioContext) { // Should be initialized by init()
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (audioContext.state === 'suspended') {
-      await audioContext.resume(); // Ensure context is active
+    try {
+      await ensureAudioContext(); // Use helper function for iOS compatibility
+    } catch (error) {
+      console.error('Failed to initialize audio system:', error);
+      statusEl.textContent = 'Error: Audio system not available. Please try again.';
+      return;
     }
 
     if (mediaRecorder && mediaRecorder.state === 'recording') {
@@ -144,19 +168,13 @@ function setupEventListeners() {
 }
 
 async function playArpeggioClickHandler() {
-  // 1. Ensure AudioContext is initialized and resumed
-  if (!audioContext) { // Fallback, should be initialized in init()
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  if (audioContext.state === 'suspended') {
-    try {
-      await audioContext.resume();
-      console.log('AudioContext resumed.');
-    } catch (err) {
-      console.error('Failed to resume AudioContext:', err);
-      statusEl.textContent = 'Audio system not active. Please click again or refresh.';
-      return;
-    }
+  // 1. Ensure AudioContext is initialized and resumed (iOS Safari compatible)
+  try {
+    await ensureAudioContext();
+  } catch (error) {
+    console.error('Failed to initialize audio system:', error);
+    statusEl.textContent = 'Audio system not available. Please try again or refresh the page.';
+    return;
   }
 
   // 2. Ensure default sound is decoded if it hasn't been already
@@ -246,6 +264,14 @@ function playArpeggio(bufferToPlay) {
     console.error('playArpeggio called with no buffer.');
     return;
   }
+  
+  // Additional iOS Safari compatibility check
+  if (!audioContext || audioContext.state !== 'running') {
+    statusEl.textContent = 'Error: Audio system not ready. Please try again.';
+    console.error('AudioContext not running when trying to play arpeggio.');
+    return;
+  }
+  
   const chordType = document.getElementById('chord').value;
   const octaves = parseInt(document.getElementById('octaves').value, 10);
   const pattern = document.getElementById('pattern').value;
@@ -268,13 +294,18 @@ function playArpeggio(bufferToPlay) {
   const noteDuration = 60 / tempo; // seconds per beat
   let startTime = audioContext.currentTime;
 
-  sequence.forEach((semitones, index) => {
-    const source = audioContext.createBufferSource();
-    source.buffer = bufferToPlay;
-    source.playbackRate.value = Math.pow(2, semitones / 12);
-    source.connect(audioContext.destination);
-    source.start(startTime + noteDuration * index);
-  });
+  try {
+    sequence.forEach((semitones, index) => {
+      const source = audioContext.createBufferSource();
+      source.buffer = bufferToPlay;
+      source.playbackRate.value = Math.pow(2, semitones / 12);
+      source.connect(audioContext.destination);
+      source.start(startTime + noteDuration * index);
+    });
+  } catch (error) {
+    console.error('Error playing arpeggio:', error);
+    statusEl.textContent = 'Error playing sound. Please try again.';
+  }
 }
 
 function getIntervals(type) {
