@@ -40,8 +40,17 @@ async function ensureAudioContext() {
     // Create AudioContext only after user interaction for iOS Safari compatibility
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
     console.log('AudioContext created after user interaction.');
+
+    // Play a silent buffer on context creation to unlock audio playback on iOS.
+    // This is a common workaround for Safari's autoplay policies.
+    const buffer = audioContext.createBuffer(1, 1, 22050);
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.connect(audioContext.destination);
+    source.start(0);
+    console.log('Played silent buffer to unlock AudioContext.');
   }
-  
+
   if (audioContext.state === 'suspended') {
     try {
       await audioContext.resume();
@@ -195,19 +204,17 @@ async function playArpeggioClickHandler() {
       statusEl.textContent = 'Preparing default sound...'; // Inform user
       const arrayBuffer = await defaultSoundArrayBufferPromise; // Get the fetched ArrayBuffer
       if (arrayBuffer) {
-        defaultAudioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+        // Use a copy of the ArrayBuffer for decoding. On some browsers (like Safari),
+        // decodeAudioData can "detach" or "neuter" the buffer, making it unusable
+        // for subsequent decodes. Creating a slice ensures the original remains intact.
+        defaultAudioBuffer = await audioContext.decodeAudioData(arrayBuffer.slice(0));
         console.log('Default sound decoded successfully on demand.');
       } else {
-        // This case implies fetchDefaultSoundArrayBuffer resolved with null/undefined,
-        // or the promise was somehow replaced. The .catch in setupEventListeners
-        // should ideally handle fetch failures.
         statusEl.textContent = 'Error: Default sound data unavailable for decoding.';
         console.error('ArrayBuffer for default sound is null/undefined after promise resolution during play.');
         return;
       }
     } catch (error) {
-      // This catch handles errors from 'await defaultSoundArrayBufferPromise' (if it rejects here)
-      // or from 'decodeAudioData'.
       console.error('Failed to load or decode default sound on demand:', error);
       statusEl.textContent = 'Error preparing default sound.';
       playArpeggioButton.disabled = true; // Disable button as default sound failed critically
