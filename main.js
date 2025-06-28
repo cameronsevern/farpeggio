@@ -20,7 +20,7 @@ let uploadedAudioBuffer;
 let recordedAudioBuffer;
 let mediaRecorder;
 let recordedChunks = [];
-const DEFAULT_SOUND_URL = 'sounds/splat.wav';
+const DEFAULT_SOUND_URL = 'sounds/splat.mp3';
 let defaultAudioBuffer = null; // Will store the decoded AudioBuffer
 let defaultSoundArrayBufferPromise = null; // Promise for the fetched ArrayBuffer
 
